@@ -6,6 +6,8 @@ using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
+using Convey.Discovery.Consul;
+using Convey.HTTP;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
@@ -21,6 +23,7 @@ using Newtonsoft.Json;
 using Pacco.Services.Availability.Application.Commands;
 using Pacco.Services.Availability.Application.Events.External;
 using Pacco.Services.Availability.Application.Services;
+using Pacco.Services.Availability.Application.Services.Clients;
 using Pacco.Services.Availability.Core.Repositories;
 using Pacco.Services.Availability.Infrastructure.Contexts;
 using Pacco.Services.Availability.Infrastructure.Decorators;
@@ -29,6 +32,7 @@ using Pacco.Services.Availability.Infrastructure.Logging;
 using Pacco.Services.Availability.Infrastructure.Mongo.Documents;
 using Pacco.Services.Availability.Infrastructure.Mongo.Repositories;
 using Pacco.Services.Availability.Infrastructure.Services;
+using Pacco.Services.Availability.Infrastructure.Services.Clients;
 
 namespace Pacco.Services.Availability.Infrastructure
 {
@@ -41,6 +45,7 @@ namespace Pacco.Services.Availability.Infrastructure
             builder.Services.AddTransient<IResourcesRepository, ResourcesMongoRepository>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient<IEventProcessor, EventProcessor>();
+            builder.Services.AddTransient<ICustomersServiceClient, CustomersServiceClient>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
             builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
@@ -53,6 +58,8 @@ namespace Pacco.Services.Availability.Infrastructure
                 .AddMongo()
                 .AddRedis()
                 .AddRabbitMq()
+                .AddHttpClient()
+                .AddConsul()
                 .AddMessageOutbox(o => o.AddMongo())
                 .AddHandlersLogging()
                 .AddMongoRepository<ResourceDocument, Guid>("resources");

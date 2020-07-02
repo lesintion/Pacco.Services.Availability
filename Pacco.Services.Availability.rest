@@ -1,5 +1,5 @@
-@url = http://localhost:5001
-@resourceId = 00000000-0000-0000-0000-000000000003
+@url = http://localhost:5000
+@resourceId = 00000000-0000-0000-0000-000000000007
 @dateTime = 2020-01-10
 @tags = ["vehicle", "armor"]
 
@@ -10,7 +10,7 @@ GET {{url}}/resources?tags={{tags}}&matchAllTags=false
 GET {{url}}/resources/{{resourceId}}
 
 ###
-POST {{url}}/api/resources
+POST {{url}}/availability/resources
 Content-Type: application/json
 
 {
@@ -24,6 +24,7 @@ Content-Type: application/json
 
 {
   "resourceId": "{{resourceId}}",
+  "customerId": "86618110-29ca-4f50-8245-ec495ad2b0fc",
   "dateTime": "{{dateTime}}",
   "priority": 0
 }
